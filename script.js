@@ -1,45 +1,36 @@
-//your JS code here. If required.
-const output = document.getElementById("output");
-
-// Step 1: Show "Loading..." initially
-const loadingRow = document.createElement("tr");
-loadingRow.innerHTML = `<td colspan="2">Loading...</td>`;
-output.appendChild(loadingRow);
-
-// Step 2: Create a function to return a Promise that resolves in 1–3 seconds
-function createTimedPromise(index) {
-  const delay = (Math.random() * 2 + 1).toFixed(3); // Random delay between 1–3 seconds
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ name: `Promise ${index}`, time: parseFloat(delay) });
-    }, delay * 1000); // Convert to milliseconds
-  });
+function delay(seconds) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }
 
-// Step 3: Create 3 promises
-const promises = [1, 2, 3].map((i) => createTimedPromise(i));
+async function executePromises() {
+  const startTotal = performance.now();
 
-// Step 4: Wait for all promises to resolve
-Promise.all(promises).then((results) => {
-  // Remove "Loading..." row
-  output.innerHTML = "";
+  const timings = [];
 
-  // Append result rows
-  results.forEach((result) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${result.name}</td>
-      <td>${result.time.toFixed(3)}</td>
-    `;
-    output.appendChild(row);
-  });
+  const start1 = performance.now();
+  await delay(2);
+  const end1 = performance.now();
+  const time1 = ((end1 - start1) / 1000).toFixed(3);
+  document.getElementById("p1").innerText = time1;
+  timings.push(end1 - start1);
 
-  // Step 5: Add the total time row (maximum time taken)
-  const maxTime = Math.max(...results.map((r) => r.time));
-  const totalRow = document.createElement("tr");
-  totalRow.innerHTML = `
-    <td><strong>Total</strong></td>
-    <td><strong>${maxTime.toFixed(3)}</strong></td>
-  `;
-  output.appendChild(totalRow);
-});
+  const start2 = performance.now();
+  await delay(1);
+  const end2 = performance.now();
+  const time2 = ((end2 - start2) / 1000).toFixed(3);
+  document.getElementById("p2").innerText = time2;
+  timings.push(end2 - start2);
+
+  const start3 = performance.now();
+  await delay(3);
+  const end3 = performance.now();
+  const time3 = ((end3 - start3) / 1000).toFixed(3);
+  document.getElementById("p3").innerText = time3;
+  timings.push(end3 - start3);
+
+  const endTotal = performance.now();
+  const total = ((endTotal - startTotal) / 1000).toFixed(3);
+  document.getElementById("total").innerText = total;
+}
+
+executePromises();
